@@ -1,8 +1,57 @@
-/*
+/* Timed Posts Plugin Styles */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.timed-posts-status {
+	cursor: default;
+	font-variant-numeric: tabular-nums;
+}
 
-If your plugin does not need CSS, delete this file.
+.timed-posts-input-container {
+	margin: 1em 0;
+}
 
-*/
+.timed-posts-input-container label {
+	display: block;
+	margin-bottom: 0.5em;
+	font-weight: 500;
+}
+
+.timed-posts-input-container input[type="number"] {
+	width: 100%;
+	padding: 0.5em;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 1em;
+}
+
+.timed-posts-grace-message {
+	margin: 1em 0;
+	font-size: 1.1em;
+	line-height: 1.5;
+}
+
+.modal-button-container {
+	display: flex;
+	gap: 0.5em;
+	justify-content: flex-end;
+	margin-top: 1.5em;
+}
+
+.modal-button-container button {
+	padding: 0.5em 1em;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9em;
+	transition: opacity 0.2s;
+}
+
+.modal-button-container button:hover {
+	opacity: 0.8;
+}
+
+.modal-button-container button.mod-cta {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
