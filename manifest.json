@@ -4,8 +4,8 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Create time-limited posts that must be completed within a deadline or be automatically archived/deleted.",
-	"author": "andreasthinks",
-	"authorUrl": "",
+	"author": "Andreas Varotsis",
+	"authorUrl": "https://andreasthinks.me/",
 	"fundingUrl": "",
 	"isDesktopOnly": false
 }
