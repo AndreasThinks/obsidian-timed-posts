@@ -183,8 +183,13 @@ export default class TimedPostsPlugin extends Plugin {
 			const now = Date.now();
 			if (!this.inGrace) {
 				this.inGrace = true;
-				this.graceEndsAt = now + this.settings.graceSeconds * 1000;
-				this.showGraceModal(file);
+				// If grace period is 0, fail immediately without showing modal
+				if (this.settings.graceSeconds === 0) {
+					await this.failActive(false);
+				} else {
+					this.graceEndsAt = now + this.settings.graceSeconds * 1000;
+					this.showGraceModal(file);
+				}
 			} else if (now >= this.graceEndsAt) {
 				await this.failActive(false);
 			}
@@ -498,7 +503,7 @@ class TimedPostsSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Warning threshold (minutes)")
-			.setDesc("Show warning when this many minutes remain")
+			.setDesc("Show warning when this many minutes remain (0 = no warning)")
 			.addText(text => text
 				.setValue(String(this.plugin.settings.warnThresholdMin))
 				.onChange(async (value) => {
@@ -511,7 +516,7 @@ class TimedPostsSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Grace period (seconds)")
-			.setDesc("Final warning time before deletion")
+			.setDesc("Final warning time before archiving/deletion (0 = instant deletion, no dialog)")
 			.addText(text => text
 				.setValue(String(this.plugin.settings.graceSeconds))
 				.onChange(async (value) => {

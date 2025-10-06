@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-timed-posts",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Create time-limited posts that must be completed within a deadline or be automatically archived/deleted.",
 	"main": "main.js",
 	"scripts": {
