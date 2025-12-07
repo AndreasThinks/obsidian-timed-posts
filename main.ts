@@ -55,16 +55,18 @@ export default class TimedPostsPlugin extends Plugin {
 		}
 
 		// Ribbon icon
-		this.addRibbonIcon('clock', 'Start Timed Post', () => {
-			this.promptAndStart();
-		});
+                this.addRibbonIcon('clock', 'Start Timed Post', async () => {
+                        await this.promptAndStart();
+                });
 
 		// Commands
-		this.addCommand({
-			id: "start-timed-post",
-			name: "Start Timed Post",
-			callback: () => this.promptAndStart(),
-		});
+                this.addCommand({
+                        id: "start-timed-post",
+                        name: "Start Timed Post",
+                        callback: async () => {
+                                await this.promptAndStart();
+                        },
+                });
 
 		this.addCommand({
 			id: "complete-timed-post",
@@ -106,17 +108,17 @@ export default class TimedPostsPlugin extends Plugin {
 		const now = Date.now();
 		const expiresAt = now + minutes * 60_000;
 
-		this.state.active = {
-			path: file.path,
-			createdAt: now,
-			expiresAt,
-		};
-		await this.saveState();
+                this.state.active = {
+                        path: file.path,
+                        createdAt: now,
+                        expiresAt,
+                };
+                await this.saveState();
 
-		await this.writeFrontmatterTimer(file, expiresAt);
-		new Notice(`Timer started for ${minutes} min: ${file.basename}`);
-		this.revealFile(file);
-	}
+                await this.writeFrontmatterTimer(file, expiresAt);
+                new Notice(`Timer started for ${minutes} min: ${file.basename}`);
+                await this.revealFile(file);
+        }
 
 	async completeActive() {
 		const timer = await this.getActiveFile();
