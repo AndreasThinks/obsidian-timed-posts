@@ -494,12 +494,14 @@ class TimedPostsSettingsTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const { containerEl } = this;
-		containerEl.empty();
-		containerEl.createEl("h2", { text: "Timed Posts Settings" });
+                const { containerEl } = this;
+                containerEl.empty();
+                new Setting(containerEl)
+                        .setName("Timed posts settings")
+                        .setHeading();
 
-		new Setting(containerEl)
-			.setName("Default duration (minutes)")
+                new Setting(containerEl)
+                        .setName("Default duration (minutes)")
 			.setDesc("Default time limit for new timed posts")
 			.addText(text => text
 				.setValue(String(this.plugin.settings.defaultDurationMin))
