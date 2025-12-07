@@ -281,12 +281,14 @@ export default class TimedPostsPlugin extends Plugin {
 		});
 	}
 
-	async handleFailure(file: TFile) {
-		switch (this.settings.deletionMode) {
-			case "archive": {
-				const folderPath = this.settings.archiveFolder?.trim() || "Failed Timed Posts";
-				let folder = this.app.vault.getAbstractFileByPath(folderPath);
-				if (!(folder instanceof TFolder)) {
+        async handleFailure(file: TFile) {
+                const trashFile = this.app.fileManager.trashFile as unknown as (file: TFile, systemTrash?: boolean) => Promise<void>;
+
+                switch (this.settings.deletionMode) {
+                        case "archive": {
+                                const folderPath = this.settings.archiveFolder?.trim() || "Failed Timed Posts";
+                                let folder = this.app.vault.getAbstractFileByPath(folderPath);
+                                if (!(folder instanceof TFolder)) {
 					try {
 						folder = await this.app.vault.createFolder(folderPath);
 					} catch {
@@ -303,20 +305,28 @@ export default class TimedPostsPlugin extends Plugin {
 					});
 				} catch (error) {
 					console.error("Failed to archive timed post:", error);
-				}
-				break;
-			}
-			case "obsidian-trash":
-				await this.app.vault.trash(file, false);
-				break;
-			case "system-trash":
-				await this.app.vault.trash(file, true);
-				break;
-			case "permanent":
-				await this.app.vault.delete(file);
-				break;
-		}
-	}
+                                }
+                                break;
+                        }
+                        case "obsidian-trash":
+                                await trashFile.call(this.app.fileManager, file, false);
+                                break;
+                        case "system-trash":
+                                await trashFile.call(this.app.fileManager, file, true);
+                                break;
+                        case "permanent": {
+                                const trashOption = this.app.vault.getConfig("trashOption");
+                                if (trashOption === "system") {
+                                        await trashFile.call(this.app.fileManager, file, true);
+                                } else if (trashOption === "local") {
+                                        await trashFile.call(this.app.fileManager, file, false);
+                                } else {
+                                        await this.app.fileManager.trashFile(file);
+                                }
+                                break;
+                        }
+                }
+        }
 
 	showGraceModal(file: TFile) {
 		const seconds = this.settings.graceSeconds;
