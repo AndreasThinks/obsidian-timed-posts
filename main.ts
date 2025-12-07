@@ -55,14 +55,14 @@ export default class TimedPostsPlugin extends Plugin {
 		}
 
 		// Ribbon icon
-                this.addRibbonIcon('clock', 'Start Timed Post', async () => {
+                this.addRibbonIcon('clock', 'Start timed post', async () => {
                         await this.promptAndStart();
                 });
 
 		// Commands
                 this.addCommand({
                         id: "start-timed-post",
-                        name: "Start Timed Post",
+                        name: "Start timed post",
                         callback: async () => {
                                 await this.promptAndStart();
                         },
@@ -70,15 +70,15 @@ export default class TimedPostsPlugin extends Plugin {
 
 		this.addCommand({
 			id: "complete-timed-post",
-			name: "Complete Timed Post",
-			callback: () => this.completeActive(),
-		});
+                        name: "Complete timed post",
+                        callback: () => this.completeActive(),
+                });
 
-		this.addCommand({
-			id: "cancel-timed-post",
-			name: "Cancel Timed Post (Archive/Delete)",
-			callback: () => this.failActive(true),
-		});
+                this.addCommand({
+                        id: "cancel-timed-post",
+                        name: "Cancel timed post (archive/delete)",
+                        callback: () => this.failActive(true),
+                });
 
 		// Settings tab
 		this.addSettingTab(new TimedPostsSettingsTab(this.app, this));
@@ -116,7 +116,7 @@ export default class TimedPostsPlugin extends Plugin {
                 await this.saveState();
 
                 await this.writeFrontmatterTimer(file, expiresAt);
-                new Notice(`Timer started for ${minutes} min: ${file.basename}`);
+                new Notice(`Timer started for ${minutes} min: ${file.basename}.`);
                 await this.revealFile(file);
         }
 
@@ -130,7 +130,7 @@ export default class TimedPostsPlugin extends Plugin {
 		this.inGrace = false;
 		this.hasWarned = false;
 		await this.saveState();
-		new Notice("Timed post completed ✅");
+                new Notice("Timed post completed. ✅");
 	}
 
 	async failActive(userInitiated = false) {
@@ -143,7 +143,7 @@ export default class TimedPostsPlugin extends Plugin {
 		this.inGrace = false;
 		this.hasWarned = false;
 		await this.saveState();
-		new Notice(userInitiated ? "Timed post cancelled." : "Timed post failed (time's up).");
+                new Notice(userInitiated ? "Timed post canceled." : "Timed post failed (time's up).");
         }
 
         // ---------- Tick loop ----------
@@ -178,7 +178,7 @@ export default class TimedPostsPlugin extends Plugin {
 
 		// Warning threshold
 		if (msLeft <= this.settings.warnThresholdMin * 60_000 && msLeft > 0 && !this.hasWarned) {
-			new Notice("⚠️ Timed post running out of time!");
+                        new Notice("⚠️ Timed post is running out of time.");
 			this.hasWarned = true;
 		}
 
@@ -319,7 +319,7 @@ export default class TimedPostsPlugin extends Plugin {
                                 await trashFile.call(this.app.fileManager, file, true);
                                 break;
                         case "permanent": {
-                                const trashOption = this.app.vault.getConfig("trashOption");
+                                const trashOption = (this.app.vault as any).getConfig("trashOption");
                                 if (trashOption === "system") {
                                         await trashFile.call(this.app.fileManager, file, true);
                                 } else if (trashOption === "local") {
@@ -335,13 +335,13 @@ export default class TimedPostsPlugin extends Plugin {
 	showGraceModal(file: TFile) {
                 const seconds = this.settings.graceSeconds;
                 const m = new Modal(this.app);
-                m.setTitle("⏰ Time's up!");
+                m.setTitle("⏰ Time's up");
 		
 		const body = m.contentEl.createDiv();
 		body.createEl("p", { 
-			text: `"${file.basename}" will be archived/deleted in ${seconds} seconds.`,
-			cls: "timed-posts-grace-message"
-		});
+                        text: `"${file.basename}" will be archived or deleted in ${seconds} seconds.`,
+                        cls: "timed-posts-grace-message"
+                });
 		
 		const buttonContainer = body.createDiv({ cls: "modal-button-container" });
 		
@@ -435,10 +435,10 @@ class DurationModal extends Modal {
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.createEl("h2", { text: "Start Timed Post" });
+                contentEl.createEl("h2", { text: "Start timed post" });
 
-		const inputContainer = contentEl.createDiv({ cls: "timed-posts-input-container" });
-		inputContainer.createEl("label", { text: "Duration (minutes):" });
+                const inputContainer = contentEl.createDiv({ cls: "timed-posts-input-container" });
+                inputContainer.createEl("label", { text: "Duration (minutes)" });
 		
 		const input = inputContainer.createEl("input", {
 			type: "number",
@@ -505,51 +505,51 @@ class TimedPostsSettingsTab extends PluginSettingTab {
 
                 new Setting(containerEl)
                         .setName("Default duration (minutes)")
-			.setDesc("Default time limit for new timed posts")
-			.addText(text => text
-				.setValue(String(this.plugin.settings.defaultDurationMin))
-				.onChange(async (value) => {
-					const num = Number(value);
-					if (num > 0) {
+                        .setDesc("Default time limit for new timed posts.")
+                        .addText(text => text
+                                .setValue(String(this.plugin.settings.defaultDurationMin))
+                                .onChange(async (value) => {
+                                        const num = Number(value);
+                                        if (num > 0) {
 						this.plugin.settings.defaultDurationMin = num;
 						await this.plugin.saveSettings();
 					}
 				}));
 
-		new Setting(containerEl)
-			.setName("Warning threshold (minutes)")
-			.setDesc("Show warning when this many minutes remain (0 = no warning)")
-			.addText(text => text
-				.setValue(String(this.plugin.settings.warnThresholdMin))
-				.onChange(async (value) => {
-					const num = Number(value);
-					if (num >= 0) {
+                new Setting(containerEl)
+                        .setName("Warning threshold (minutes)")
+                        .setDesc("Show a warning when this many minutes remain (0 = no warning).")
+                        .addText(text => text
+                                .setValue(String(this.plugin.settings.warnThresholdMin))
+                                .onChange(async (value) => {
+                                        const num = Number(value);
+                                        if (num >= 0) {
 						this.plugin.settings.warnThresholdMin = num;
 						await this.plugin.saveSettings();
 					}
 				}));
 
-		new Setting(containerEl)
-			.setName("Grace period (seconds)")
-			.setDesc("Final warning time before archiving/deletion (0 = instant deletion, no dialog)")
-			.addText(text => text
-				.setValue(String(this.plugin.settings.graceSeconds))
-				.onChange(async (value) => {
-					const num = Number(value);
-					if (num >= 0) {
+                new Setting(containerEl)
+                        .setName("Grace period (seconds)")
+                        .setDesc("Final warning time before archiving or deletion (0 = instant deletion, no dialog).")
+                        .addText(text => text
+                                .setValue(String(this.plugin.settings.graceSeconds))
+                                .onChange(async (value) => {
+                                        const num = Number(value);
+                                        if (num >= 0) {
 						this.plugin.settings.graceSeconds = num;
 						await this.plugin.saveSettings();
 					}
 				}));
 
-		new Setting(containerEl)
-			.setName("Deletion mode")
-			.setDesc("What happens to failed timed posts")
-			.addDropdown(dropdown => dropdown
-				.addOptions({
-					"archive": "Archive to folder (recommended)",
-					"obsidian-trash": "Obsidian trash",
-					"system-trash": "System trash",
+                new Setting(containerEl)
+                        .setName("Deletion mode")
+                        .setDesc("Choose what happens to failed timed posts.")
+                        .addDropdown(dropdown => dropdown
+                                .addOptions({
+                                        "archive": "Archive to folder (recommended)",
+                                        "obsidian-trash": "Obsidian trash",
+                                        "system-trash": "System trash",
 					"permanent": "Permanent delete (danger!)",
 				})
 				.setValue(this.plugin.settings.deletionMode)
@@ -558,50 +558,50 @@ class TimedPostsSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		new Setting(containerEl)
-			.setName("Archive folder")
-			.setDesc("Folder for archived failed posts (when using archive mode)")
-			.addText(text => text
-				.setPlaceholder("Failed Timed Posts")
-				.setValue(this.plugin.settings.archiveFolder)
-				.onChange(async (value) => {
-					this.plugin.settings.archiveFolder = value.trim();
+                new Setting(containerEl)
+                        .setName("Archive folder")
+                        .setDesc("Folder for archived failed posts (for archive mode).")
+                        .addText(text => text
+                                .setPlaceholder("Failed Timed Posts")
+                                .setValue(this.plugin.settings.archiveFolder)
+                                .onChange(async (value) => {
+                                        this.plugin.settings.archiveFolder = value.trim();
 					await this.plugin.saveSettings();
 				}));
 
-		new Setting(containerEl)
-			.setName("Timed posts folder")
-			.setDesc("Folder where new timed posts are created (leave empty for vault root)")
-			.addText(text => text
-				.setPlaceholder("(vault root)")
-				.setValue(this.plugin.settings.timedPostsFolder)
-				.onChange(async (value) => {
-					this.plugin.settings.timedPostsFolder = value.trim();
+                new Setting(containerEl)
+                        .setName("Timed posts folder")
+                        .setDesc("Folder where new timed posts are created (leave empty for the vault root).")
+                        .addText(text => text
+                                .setPlaceholder("(vault root)")
+                                .setValue(this.plugin.settings.timedPostsFolder)
+                                .onChange(async (value) => {
+                                        this.plugin.settings.timedPostsFolder = value.trim();
 					await this.plugin.saveSettings();
 				}));
 
-		new Setting(containerEl)
-			.setName("Template file path")
-			.setDesc("Optional template file to use for new timed posts")
-			.addText(text => text
-				.setPlaceholder("Templates/Timed Post.md")
-				.setValue(this.plugin.settings.templateFilePath)
-				.onChange(async (value) => {
-					this.plugin.settings.templateFilePath = value.trim();
+                new Setting(containerEl)
+                        .setName("Template file path")
+                        .setDesc("Optional template file to use for new timed posts.")
+                        .addText(text => text
+                                .setPlaceholder("Templates/Timed Post.md")
+                                .setValue(this.plugin.settings.templateFilePath)
+                                .onChange(async (value) => {
+                                        this.plugin.settings.templateFilePath = value.trim();
 					await this.plugin.saveSettings();
 				}));
 
-		new Setting(containerEl)
-			.setName("Show status bar")
-			.setDesc("Display countdown timer in status bar")
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.statusBarEnabled)
-				.onChange(async (value) => {
-					this.plugin.settings.statusBarEnabled = value;
-					await this.plugin.saveSettings();
-					new Notice("Restart Obsidian to apply status bar changes");
-				}));
-	}
+                new Setting(containerEl)
+                        .setName("Show status bar")
+                        .setDesc("Display the countdown timer in the status bar.")
+                        .addToggle(toggle => toggle
+                                .setValue(this.plugin.settings.statusBarEnabled)
+                                .onChange(async (value) => {
+                                        this.plugin.settings.statusBarEnabled = value;
+                                        await this.plugin.saveSettings();
+                                        new Notice("Restart Obsidian to apply status bar changes.");
+                                }));
+        }
 }
 
 // ---------- Utility functions ----------
