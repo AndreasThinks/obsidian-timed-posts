@@ -318,37 +318,37 @@ export default class TimedPostsPlugin extends Plugin {
 		}
         }
 
-        showGraceModal(file: TFile) {
-                const seconds = this.settings.graceSeconds;
-                const m = new Modal(this.app);
-                m.setTitle("⏰ Time's up!");
-		
+	showGraceModal(file: TFile) {
+		const seconds = this.settings.graceSeconds;
+		const m = new Modal(this.app);
+		m.setTitle("⏰ Time's up!");
+
 		const body = m.contentEl.createDiv();
-		body.createEl("p", { 
+		body.createEl("p", {
 			text: `"${file.basename}" will be archived/deleted in ${seconds} seconds.`,
-			cls: "timed-posts-grace-message"
+			cls: "timed-posts-grace-message",
 		});
-		
+
 		const buttonContainer = body.createDiv({ cls: "modal-button-container" });
-		
-		const completeBtn = buttonContainer.createEl("button", { 
+
+		const completeBtn = buttonContainer.createEl("button", {
 			text: "Complete now",
-			cls: "mod-cta"
+			cls: "mod-cta",
 		});
-		
-                const letFailBtn = buttonContainer.createEl("button", {
-                        text: "Let it fail"
-                });
 
-                completeBtn.onclick = async () => {
-                        m.close();
-                        await this.completeActive();
-                };
+		const letFailBtn = buttonContainer.createEl("button", {
+			text: "Let it fail",
+		});
 
-                letFailBtn.onclick = () => {
-                        m.close();
-                        // Timer will continue and fail when grace period ends
-                };
+		completeBtn.onclick = async () => {
+			m.close();
+			await this.completeActive();
+		};
+
+		letFailBtn.onclick = () => {
+			m.close();
+			// Timer will continue and fail when grace period ends
+		};
 
 		m.open();
 	}
