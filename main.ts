@@ -333,10 +333,9 @@ export default class TimedPostsPlugin extends Plugin {
         }
 
 	showGraceModal(file: TFile) {
-		const seconds = this.settings.graceSeconds;
-		const plugin = this;
-		const m = new Modal(this.app);
-		m.setTitle("⏰ Time's up!");
+                const seconds = this.settings.graceSeconds;
+                const m = new Modal(this.app);
+                m.setTitle("⏰ Time's up!");
 		
 		const body = m.contentEl.createDiv();
 		body.createEl("p", { 
@@ -355,10 +354,10 @@ export default class TimedPostsPlugin extends Plugin {
 			text: "Let it fail"
 		});
 
-		completeBtn.onclick = async () => {
-			m.close();
-			await plugin.completeActive();
-		};
+                completeBtn.onclick = async () => {
+                        m.close();
+                        await this.completeActive();
+                };
 		
 		letFailBtn.onclick = () => {
 			m.close();
