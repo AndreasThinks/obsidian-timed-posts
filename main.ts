@@ -281,11 +281,11 @@ export default class TimedPostsPlugin extends Plugin {
 		});
 	}
 
-	async handleFailure(file: TFile) {
-		switch (this.settings.deletionMode) {
-			case "archive": {
-				const folderPath = this.settings.archiveFolder?.trim() || "Failed Timed Posts";
-				let folder = this.app.vault.getAbstractFileByPath(folderPath);
+        async handleFailure(file: TFile) {
+                switch (this.settings.deletionMode) {
+                        case "archive": {
+                                const folderPath = this.settings.archiveFolder?.trim() || "Failed Timed Posts";
+                                let folder = this.app.vault.getAbstractFileByPath(folderPath);
 				if (!(folder instanceof TFolder)) {
 					try {
 						folder = await this.app.vault.createFolder(folderPath);
@@ -316,13 +316,12 @@ export default class TimedPostsPlugin extends Plugin {
 				await this.app.vault.delete(file);
 				break;
 		}
-	}
+        }
 
-	showGraceModal(file: TFile) {
-		const seconds = this.settings.graceSeconds;
-		const plugin = this;
-		const m = new Modal(this.app);
-		m.setTitle("⏰ Time's up!");
+        showGraceModal(file: TFile) {
+                const seconds = this.settings.graceSeconds;
+                const m = new Modal(this.app);
+                m.setTitle("⏰ Time's up!");
 		
 		const body = m.contentEl.createDiv();
 		body.createEl("p", { 
@@ -337,19 +336,19 @@ export default class TimedPostsPlugin extends Plugin {
 			cls: "mod-cta"
 		});
 		
-		const letFailBtn = buttonContainer.createEl("button", { 
-			text: "Let it fail"
-		});
+                const letFailBtn = buttonContainer.createEl("button", {
+                        text: "Let it fail"
+                });
 
-		completeBtn.onclick = async () => {
-			m.close();
-			await plugin.completeActive();
-		};
-		
-		letFailBtn.onclick = () => {
-			m.close();
-			// Timer will continue and fail when grace period ends
-		};
+                completeBtn.onclick = async () => {
+                        m.close();
+                        await this.completeActive();
+                };
+
+                letFailBtn.onclick = () => {
+                        m.close();
+                        // Timer will continue and fail when grace period ends
+                };
 
 		m.open();
 	}
