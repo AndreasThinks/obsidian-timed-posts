@@ -142,13 +142,15 @@ export default class TimedPostsPlugin extends Plugin {
 		this.hasWarned = false;
 		await this.saveState();
 		new Notice(userInitiated ? "Timed post cancelled." : "Timed post failed (time's up).");
-	}
+        }
 
-	// ---------- Tick loop ----------
+        // ---------- Tick loop ----------
 
-	startTick() {
-		this.tickHandle = window.setInterval(() => this.tick(), 1000);
-	}
+        startTick() {
+                this.tickHandle = window.setInterval(() => {
+                        void this.tick();
+                }, 1000);
+        }
 
 	async tick() {
 		// Update status/countdown
